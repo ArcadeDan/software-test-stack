@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/ArcadeDan/soyware-test-stack/issues"
   },
-  "homepage": "https://github.com/ArcadeDan/soyware-test-stack#readme"
+  "homepage": "https://github.com/ArcadeDan/soyware-test-stack#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }

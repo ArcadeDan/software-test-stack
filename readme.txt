@@ -6,3 +6,12 @@ steps:
   3. run the script "nginx_node_setup.sh" to install set up the symbolic link for node.js to nginx
   4. build up your modules via command line w/ "npm" (will download all the packages)
   5. start the application by running "npm run start" (will start the application on port 3000)  
+
+
+
+NPM packages used:
+  - express
+  - bcrypt
+  - sqlite3
+
+

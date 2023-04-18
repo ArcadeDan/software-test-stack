@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 const http = require('http');
 const port = 3000;
 const express = require('express');
@@ -6,6 +10,8 @@ const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
+
+const users = [];
 
 const app = express();
 const { spawn } = require('child_process');
@@ -75,7 +81,7 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
 
 app.post('/register', checkNotAuthenticated, async (req, res) => {
     try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const hashedPassword = await bcrypt.hash(req.body.password, 8);
         users.push({
             id: Date.now().toString(),
             name: req.body.name,

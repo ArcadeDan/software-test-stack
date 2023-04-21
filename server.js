@@ -14,7 +14,7 @@ const pythonScript = spawn('python3', ['test.py', '2', '3']);
 app.listen(port, () => console.log(`Test app listening on port ${port}`));
 
 
-
+// test for python script
 pythonScript.stdout.on('data', (data) => {
     console.log('stdout: ${data}');
     const result = parseInt(data);

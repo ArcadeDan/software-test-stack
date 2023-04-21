@@ -16,15 +16,9 @@ const users = [];
 const app = express();
 const { spawn } = require('child_process');
 
-
-
-app.get('/', (req, res) => {
-    res.send('Hello, World!');
-    });
-
 function checkAuthenticated(req, res, next) {
-    if (req.headers['x-auth'] == '12345') {
-        next();
+    if (req.isAuthenticated()) {
+        return next();
     } 
     res.redirect('/login')
 }
@@ -36,6 +30,7 @@ function checkNotAuthenticated(req, res, next) {
     next();
 }
 
+
 const createPassport = require('./passportConfig');
 createPassport(
     passport,
@@ -43,7 +38,7 @@ createPassport(
     id => users.find(user => user.id === id)
 );
 
-app.set('view-engine', 'ejs');
+app.set('view engine', 'ejs');
 app.use(express.urlencoded({extended: false}));
 app.use(flash());
 app.use(session({
@@ -95,15 +90,9 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
     console.log(users);
 });
 
-app.delete('/logout', function(req, res, next) {
-    req.logout(function(err) {
-        if (err) { return next(err); }
-        res.redirect('/');
-    });
-});
+
 
 const pythonScript = spawn('python3', ['test.py', '2', '3']);
-app.listen(port, () => console.log(`Test app listening on port ${port}`));
 
 
 // test for python script
@@ -126,7 +115,14 @@ pythonScript.on('close', (code) => {
     console.log('child process exited with code ${code}');
 });
 
+app.delete('/logout', function(req, res, next) {
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        res.redirect('/');
+    });
+});
 
+app.listen(port, () => console.log(`Test app listening on port ${port}`));
 
 
 

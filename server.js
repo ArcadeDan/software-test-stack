@@ -2,6 +2,9 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
+
+
+
 const http = require('http');
 const port = 3000;
 const express = require('express');
@@ -14,8 +17,29 @@ const users = [];
 const app = express();
 const { spawn } = require('child_process');
 const sqlite3 = require('sqlite3').verbose();
+const coreJs = require('core-js');
 
 
+
+function insertData() {
+    console.log(users);
+    let sql = 'INSERT INTO test(id, name, email, password) VALUES(?, ?, ?, ?)';
+    let db = new sqlite3.Database('test.db', sqlite3.OPEN_READWRITE, (err) => {
+        if (err) {
+            return console.error(err.message);
+        } else {
+            console.log('Connected to the test database.');
+        }
+    }
+    );
+    db.run(sql, [users.at(-1).id, users.at(-1).name, users.at(-1).email, users.at(-1).password], function(err) {
+        if (err) {
+            return console.log(err.message);
+        }
+        console.log('Row was added to the table');
+    }
+    );
+}
 
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
@@ -85,7 +109,7 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
     } catch {
         res.redirect('/register');
     }
-    console.log(users);
+    insertData();
 });
 
 app.get('/' , checkAuthenticated, (req, res) => {

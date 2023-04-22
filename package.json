@@ -20,6 +20,7 @@
   "dependencies": {
     "bcrypt": "^5.1.0",
     "child_process": "^1.0.2",
+    "core-js": "^3.30.1",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.9",
     "express": "^4.18.2",

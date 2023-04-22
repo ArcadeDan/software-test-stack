@@ -2,14 +2,12 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
-
-
-
 const http = require('http');
 const port = 3000;
 const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
@@ -21,7 +19,11 @@ const coreJs = require('core-js');
 
 
 
-function insertData() {
+
+        
+
+// inserts last index of user data into db, meant to be used after a new user is registered
+function insertUserData() {
     console.log(users);
     let sql = 'INSERT INTO test(id, name, email, password) VALUES(?, ?, ?, ?)';
     let db = new sqlite3.Database('test.db', sqlite3.OPEN_READWRITE, (err) => {
@@ -36,18 +38,18 @@ function insertData() {
         if (err) {
             return console.log(err.message);
         }
-        console.log('Row was added to the table');
+        console.log('Successful insert into the database');
     }
     );
 }
-
+// passport authentication
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
     } 
     res.redirect('/login')
 }
-
+// passport authentication
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return res.redirect('/')
@@ -62,6 +64,30 @@ createPassport(
     email => users.find(user => user.email === email),
     id => users.find(user => user.id === id)
 );
+
+/*
+function findUserByUsername(username, done) {
+    let db = new sqlite3.Database('test.db', sqlite3.OPEN_READWRITE, (err) => {
+        if (err) {
+            return console.error(err.message);
+        } else {
+            console.log('Connected to the user database.');
+            db.get('SELECT * FROM test WHERE name = ?', username, (err, row) => {
+                if (err)  { return done(err); } 
+                if (!row) { 
+                    //confirm.log('No user found');
+                    return done(null, row); }
+                }
+            );
+        } 
+    }
+    );   
+}
+*/
+
+
+
+
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({extended: false}));
@@ -109,7 +135,7 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
     } catch {
         res.redirect('/register');
     }
-    insertData();
+    insertUserData();
 });
 
 app.get('/' , checkAuthenticated, (req, res) => {
@@ -138,10 +164,14 @@ app.get('/' , checkAuthenticated, (req, res) => {
             console.error(err.message);
             next()
         }
-        console.log('Close the database connection.');
+        //console.log('Close the database connection.');
     }
     );
 });
+
+
+
+
 
 
 const pythonScript = spawn('python3', ['test.py', '2', '3']);
@@ -171,12 +201,5 @@ app.delete('/logout', function(req, res, next) {
         res.redirect('/');
     });
 });
-
+//console.log(findUserByUsername('dan', 'console.log'))
 app.listen(port, () => console.log(`Test app listening on port ${port}`));
-
-
-
-
-
-
-

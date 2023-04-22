@@ -10,11 +10,12 @@ const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
-
 const users = [];
-
 const app = express();
 const { spawn } = require('child_process');
+const sqlite3 = require('sqlite3').verbose();
+
+
 
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
@@ -51,9 +52,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride('_method'));
 
-app.get('/' , checkAuthenticated, (req, res) => {
-    res.render('index.ejs', {name: req.user.name});
-});
 
 app.get('/login', checkNotAuthenticated, (req, res) => {
     res.render('login.ejs');
@@ -90,11 +88,39 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
     console.log(users);
 });
 
+app.get('/' , checkAuthenticated, (req, res) => {
+    res.render('index.ejs', {name: req.user.name});
+    const db = new sqlite3.Database('test.db', sqlite3.OPEN_READWRITE, (err) => {
+        if (err) {
+            return console.error(err.message);
+        } else {
+            console.log('Connected to the test database.');
+            db.all ('SELECT * FROM test', [], (err, rows) => {
+                if (err) {
+                    console.log(err.message);
+                    
+                } else {
+                    console.log(rows);
+                
+                }
+            });
+
+        }
+        
+    }
+    );
+    db.close((err) => {
+        if (err) {
+            console.error(err.message);
+            next()
+        }
+        console.log('Close the database connection.');
+    }
+    );
+});
 
 
 const pythonScript = spawn('python3', ['test.py', '2', '3']);
-
-
 // test for python script
 pythonScript.stdout.on('data', (data) => {
     console.log('stdout: ${data}');

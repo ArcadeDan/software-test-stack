@@ -11,7 +11,7 @@ if __name__ == '__main__':
     filename = 'dump.txt'
 
     with open(filename, 'w') as f:
-        f.write('Hello')
+        f.write('python success')
 
     a = int(sys.argv[1]) 
     b = int(sys.argv[2])

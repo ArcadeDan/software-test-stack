@@ -17,11 +17,6 @@ const { spawn } = require('child_process');
 const sqlite3 = require('sqlite3').verbose();
 const coreJs = require('core-js');
 
-
-
-
-        
-
 // inserts last index of user data into db, meant to be used after a new user is registered
 function insertUserData() {
     console.log(users);
@@ -34,6 +29,7 @@ function insertUserData() {
         }
     }
     );
+    
     db.run(sql, [users.at(-1).id, users.at(-1).name, users.at(-1).email, users.at(-1).password], function(err) {
         if (err) {
             return console.log(err.message);

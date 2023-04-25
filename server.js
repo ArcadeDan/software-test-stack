@@ -197,5 +197,15 @@ app.delete('/logout', function(req, res, next) {
         res.redirect('/');
     });
 });
+
+app.delete('/logout', function(req, res, next) {
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        res.redirect('/');
+    });
+});
+
 //console.log(findUserByUsername('dan', 'console.log'))
 app.listen(port, () => console.log(`Test app listening on port ${port}`));
+
+
